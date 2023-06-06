@@ -71,7 +71,6 @@ async function run() {
       const alreadyBooked = await bookingsColection
         .find(bookingQuery)
         .toArray();
-
       options.forEach((option) => {
         const optionBooked = alreadyBooked.filter(
           (book) => book.treatment === option.name
@@ -105,6 +104,7 @@ async function run() {
       const query = {
         selectedDate: booking.selectedDate,
         treatment: booking.treatment,
+        email: booking.email
       };
       const alreadyBooked = await bookingsColection.find(query).toArray();
       if (alreadyBooked.length) {
@@ -139,16 +139,16 @@ async function run() {
       res.send(users);
     });
 
-    app.delete("/user/:id", async (req, res) => {
+    app.delete("/user/:id", verifyJwt, verifyAdmin, async (req, res) => {
       const id = req.params.id
       const query = {_id: new ObjectId(id)};
-      const users = await usersColection.deleteOne(query).toArray();
+      const users = await usersColection.deleteOne(query);
       res.send(users);
     });
 
     app.get("/jwt", async (req, res) => {
       const email = req.query.email;
-      const query = { email: email };
+      const query = {email: email};
       const user = await usersColection.findOne(query);
       if (user) {
         var token = jwt.sign({ email }, process.env.ACCESS_TOKEN, {
@@ -202,7 +202,7 @@ async function run() {
       const email = req.params.email;
       const query = { email };
       const user = await usersColection.findOne(query);
-      res.send({ isAdmin: user.role == "admin" });
+      res.send({ isAdmin: user?.role == "admin" });
     });
 
     app.get("/appointmentSpecialty", async (req, res) => {
