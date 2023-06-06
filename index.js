@@ -152,7 +152,7 @@ async function run() {
       const user = await usersColection.findOne(query);
       if (user) {
         var token = jwt.sign({ email }, process.env.ACCESS_TOKEN, {
-          expiresIn: "2d",
+          expiresIn: "2h",
         });
         return res.send({ accessToken: token });
       }
@@ -233,21 +233,21 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/addPrice", async (req, res) => {
-      const filter = {};
-      const options = { upsert: true };
-      const updatedDoc = {
-        $set: {
-          price: 99,
-        },
-      };
-      const result = await appointmentColection.updateMany(
-        filter,
-        updatedDoc,
-        options
-      );
-      res.send(result);
-    });
+    // app.get("/addPrice", async (req, res) => {
+    //   const filter = {};
+    //   const options = { upsert: true };
+    //   const updatedDoc = {
+    //     $set: {
+    //       price: 99,
+    //     },
+    //   };
+    //   const result = await appointmentColection.updateMany(
+    //     filter,
+    //     updatedDoc,
+    //     options
+    //   );
+    //   res.send(result);
+    // });
   } finally {
   }
 }
