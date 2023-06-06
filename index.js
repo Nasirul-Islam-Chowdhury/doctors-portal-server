@@ -87,7 +87,7 @@ async function run() {
 
     function verifyJwt(req, res, next) {
       const authHeader = req.headers.autherization;
-      if (!authHeader) {
+      if (!authHeader) { 
         return res.status(401).send("Unauthorized acccess");
       }
       const token = authHeader.split(" ")[1];
@@ -136,6 +136,13 @@ async function run() {
     app.get("/users", async (req, res) => {
       const query = {};
       const users = await usersColection.find(query).toArray();
+      res.send(users);
+    });
+
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)};
+      const users = await usersColection.deleteOne(query).toArray();
       res.send(users);
     });
 
